@@ -22,6 +22,7 @@ io.on("connection", (client) => {
 //   route: 'addition',
 //   id: socket.id,
 //   intendedReciever: 'sender',
+//   clientRoute: 'example',
 //   payload:
 //   {
 //     stuff: 'pog',
