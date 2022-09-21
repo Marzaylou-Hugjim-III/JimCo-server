@@ -30,7 +30,16 @@ class ExampleRoute extends Route {
   static { Route.subclasses.add(this) };
   invoke(message) {
     // write code here
-    return message;
+    return message; // used so that outboard switchboard has something to navigate with. 
+  }
+}
+
+class resourceRoute extends Route {
+  static name = "resource"; // only change the assigned name
+  static { Route.subclasses.add(this) }; // dont touch
+  invoke(message) { // the message comes from the client. 
+    // write code here
+    return message; // used so that outboard switchboard has something to navigate with. 
   }
 }
 

@@ -13,6 +13,6 @@ export function emitToOthers(ignoredId, message) {
     if (client.id === ignoredId) {
       continue;
     }
-    client.emit(message);
+    client.emit("pong", message);
   }
 }
