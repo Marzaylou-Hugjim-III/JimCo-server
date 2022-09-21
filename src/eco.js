@@ -8,8 +8,6 @@ class Resource {
     this.quantity = quantity; // min of zero, max of 1000
     this.multiplier = multiplier; // scalar used to help determine how much rateOfProd can change per tick. 
   }
-
-
 };
 
 const Grain = new Resource(17, 3, 2, 2, 1, 13);
@@ -46,3 +44,5 @@ console.log("before loop", Grain);
 
 loop(Grain);
 console.log("post loop",Grain);
+
+module.exports = Resource
