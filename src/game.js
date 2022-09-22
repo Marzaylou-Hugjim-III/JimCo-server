@@ -86,7 +86,7 @@ class Game {
 
     startGame() {
         console.log("starting");
-        this.processId = setInterval(() => {this.process()}, 500)
+        this.processId = setInterval(() => {this.process()}, 50)
     }
 
     process() {

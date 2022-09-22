@@ -14,21 +14,26 @@ class Resource {
   multiplier; // scalar used to help determine how much rateOfProd can change per tick. 
 
   productionRate() {
-    if(this.quantity > 200){
-       this.rateOfProd = Math.floor(10*Math.sin(Math.random()*2*Math.PI) * this.multiplier);
+    if(this.quantity > 200 && this.quantity <1200){ //essentially random increase, with an average of 5 more than zero between 200 and 1200
+       this.rateOfProd = Math.floor(Math.sin(Math.random()*2*Math.PI) * this.multiplier+5);
        return this.rateOfProd;
     }
-    if(this.quantity > 1500){
+    if(this.quantity > 1200){  // with quantities higher than 1200, rate of production drops to 0. on a random number from 0-1 of higher than .8, remove up to 750 from quantity.
+      let randomNum = Math.random();
+      if(randomNum > .8){
+        this.rateOfProd= Math.floor(Math.random()*-750);
+        return this.rateOfProd;
+      }
       return this.rateOfProd = 0;
     }
-    else{
+    else{ //slow, positive growth before quantity of 200
       this.rateOfProd = Math.floor(Math.random()*this.multiplier);
       return this.rateOfProd;
     }
   };
 
   priceCalc = () => {
-    this.price = Math.round(((this.minPrice - this.maxPrice) / (1000-this.quantity)) * this.quantity + this.maxPrice);
+    this.price = Math.round(((this.minPrice - this.maxPrice) / (1000)) * this.quantity + this.maxPrice);
     if (this.price > this.maxPrice) {
       this.price = this.maxPrice;
     }
