@@ -1,5 +1,6 @@
 const routeMap = new Map();
 const resourceMap = require('./eco');
+const { game, lobby } = require("../server")
 
 class Route {
   static name = "error";
@@ -45,6 +46,63 @@ class getResourcesRoute extends Route {
       resourceArray
   };
     return message; // used so that outboard switchboard has something to navigate with. 
+  }
+}
+
+class addMoneyRoute extends Route {
+  static name = "addMoney"
+  static { Route.subclasses.add(this) }; // dont touch
+  invoke(message) { // the message comes from the client.
+    if(!game) {
+      return
+    }
+    const player = game.id2player(message.id); // return player object which sent the message
+    game.addMoney(player, message.payload.amt); 
+    message.payload = {
+      id: message.id,
+      money: amt,
+    }
+    return message //update the player's money count
+  }
+}
+
+class joinLobbyRoute extends Route {
+  static name = "joinLobby"
+  static { Route.subclasses.add(this) }; // dont touch
+  invoke(message) { // the message comes from the client.
+    lobby += message.id
+    message.payload = {
+      success: true
+    }
+    return message //tell the player we joined
+  }
+}
+
+class startGameRoute extends Route {
+  static name = "startGame"
+  static { Route.subclasses.add(this) }; // dont touch
+  invoke(message) { // the message comes from the client.
+    if(game) {
+      return
+    }
+    game = new Game(lobby)
+    message.payload = {
+      success: true
+    }
+    return message //update the player's money count
+  }
+}
+
+class getPlayer extends Route {
+  static name = "getPlayer"
+  static { Route.subclasses.add(this) }; // dont touch
+  invoke(message) { // the message comes from the client.
+    if(!game) {
+      return
+    }
+    const player = game.id2player(message.id); // return player object which sent the message
+    message.payload = player
+    return message //send players
   }
 }
 
