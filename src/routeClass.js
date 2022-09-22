@@ -1,4 +1,5 @@
 const routeMap = new Map();
+const resourceMap = require('./eco');
 
 class Route {
   static name = "error";
@@ -34,11 +35,15 @@ class ExampleRoute extends Route {
   }
 }
 
-class resourceRoute extends Route {
-  static name = "resource"; // only change the assigned name
+class getResourcesRoute extends Route {
+  static name = "getResources"; // only change the assigned name
   static { Route.subclasses.add(this) }; // dont touch
   invoke(message) { // the message comes from the client. 
-    // write code here
+      let resourceArray = [];
+      Object.keys(resourceMap).forEach(key => resourceArray.push({name: key.name, quantity: key.quantity, price: key.price }));
+    message.payload = { 
+      resourceArray
+  };
     return message; // used so that outboard switchboard has something to navigate with. 
   }
 }
