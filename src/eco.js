@@ -45,7 +45,7 @@ class Resource {
 class Grain extends Resource {
   static name = "Grain";
   static {
-    resource.subclasses.add(this); // sets subclasses as a set and adds each child to it. 
+    Resource.subclasses.add(this); // sets subclasses as a set and adds each child to it. 
   }
   maxPrice = 17; // resource will not sell for more than this, this is price at quantity of one
   minPrice = 3; // will not sell for less, this is price at quantity = 1000

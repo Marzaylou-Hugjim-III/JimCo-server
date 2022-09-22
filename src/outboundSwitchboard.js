@@ -1,6 +1,6 @@
-import { emitToOthers, getClientByID } from "./emit.js";
+const { emitToOthers, getClientByID } = require("./emit.js");
 
-export function outboundSwitchboard(message) {
+function outboundSwitchboard(message) {
   const key = message?.intendedReciever;
   switch (key) {
     case 'sender':
@@ -14,4 +14,8 @@ export function outboundSwitchboard(message) {
     default:
       break;
   }
+}
+
+module.exports = {
+  outboundSwitchboard,
 }
