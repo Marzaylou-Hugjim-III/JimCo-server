@@ -1,6 +1,6 @@
 const routeMap = new Map();
 const resourceMap = require('./eco');
-const { game, lobby } = require("../server")
+const { game, lobby } = require("../server");
 
 class Route {
   static name = "error";

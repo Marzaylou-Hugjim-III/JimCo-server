@@ -14,7 +14,7 @@ const presets = [ // when game starts, randomly pick an array of resources in ga
 ];
 
 class Player {
-    money = 0
+    money = 0;
     resourceMap = undefined;
 
     constructor(clientId) {
@@ -25,6 +25,7 @@ class Player {
     getResourceCount(name) {
         return this.resourceMap.get(name);
     }
+    
 };
 
 class Game {

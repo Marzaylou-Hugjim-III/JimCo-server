@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 const io = new Server();
-import dotenv from "dotenv";
-import { routeMap } from "./src/routeClass.js";
-import { outboundSwitchboard } from './src/outboundSwitchboard.js';
+const dotenv = require("dotenv");
+const { routeMap } = ("./src/routeClass.js");
+const { outboundSwitchboard } = ('./src/outboundSwitchboard.js');
 let { Game } = require("./src/game")
 let game;
 let lobby = [];
