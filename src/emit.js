@@ -1,14 +1,16 @@
-import { allClients } from '..server';
+const { allClients } = require("../server.js");
 
-export function getClientByID(id) {
+function getClientByID(id) {
   let output;
-  allClients.forEach((client) => {// use allClients.find
+  console.log("allClients", allClients);
+  allClients.forEach((client) => {
+    // use allClients.find
     client.id === id ? (output = client) : null;
   });
   return output;
 } // this could instead directly emit to client witth error handling
 
-export function emitToOthers(ignoredId, message) {
+function emitToOthers(ignoredId, message) {
   for (const client of allClients) {
     if (client.id === ignoredId) {
       continue;
@@ -16,3 +18,8 @@ export function emitToOthers(ignoredId, message) {
     client.emit("pong", message);
   }
 }
+
+module.exports = {
+  getClientByID,
+  emitToOthers,
+};
