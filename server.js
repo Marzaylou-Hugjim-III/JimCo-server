@@ -8,6 +8,9 @@ const io = new Server(httpServer, {
 });
 const dotenv = require("dotenv");
 const { routeMap } = require("./src/routeClass");
+let { Game } = require("./src/game")
+let game;
+let lobby = [];
 dotenv.config();
 io.listen(process.env.PORT || 3500);
 
@@ -28,6 +31,7 @@ console.log("test");
 //   route: 'addition',
 //   id: socket.id,
 //   intendedReciever: 'sender',
+//   clientRoute: 'example',
 //   payload:
 //   {
 //     stuff: 'pog',
@@ -82,4 +86,6 @@ function emitToOthers(ignoredId, message) {
 
 module.exports = {
   allClients,
-};
+  game,
+  lobby,
+}
