@@ -3,7 +3,6 @@ const resourceMap = new Map();
 
 class Resource {
   static name;
-  static subclasses = new Set();
   constructor() {    // the name/key       value
     resourceMap.set(this.constructor.name, this);
   }
@@ -14,13 +13,22 @@ class Resource {
   quantity; // min of zero, max of 1000
   multiplier; // scalar used to help determine how much rateOfProd can change per tick. 
 
-  productionRate = () => {
-    this.rateOfProd = Math.floor(Math.random() * this.multiplier);
-    return this.rateOfProd;
+  productionRate() {
+    if(this.quantity > 200){
+       this.rateOfProd = Math.floor(10*Math.sin(Math.random()*2*Math.PI) * this.multiplier);
+       return this.rateOfProd;
+    }
+    if(this.quantity > 1500){
+      return this.rateOfProd = 0;
+    }
+    else{
+      this.rateOfProd = Math.floor(Math.random()*this.multiplier);
+      return this.rateOfProd;
+    }
   };
 
   priceCalc = () => {
-    this.price = Math.round(((this.maxPrice - this.minPrice) / (1000)) * this.quantity + this.minPrice);
+    this.price = Math.round(((this.minPrice - this.maxPrice) / (1000-this.quantity)) * this.quantity + this.maxPrice);
     if (this.price > this.maxPrice) {
       this.price = this.maxPrice;
     }
@@ -31,22 +39,20 @@ class Resource {
   };
 
   quantityCalc = () => {
-    this.quantity = this.quantity + productionRate(this);// need to subtract amount bought and add amount sold.  
+    this.quantity = this.quantity + this.rateOfProd;// need to subtract amount bought and add amount sold.  
   }
 
   loop = () => {
-    productionRate(resource); // determine what the amount produced will be
-    quantity(resource); // determine what the new amount will be
-    price(resource); // determine what the new price will be. 
+    this.productionRate(); // determine what the amount produced will be
+    this.quantityCalc(); // determine what the new amount will be
+    this.priceCalc(); // determine what the new price will be. 
+    console.log("name =", this.name, ", quantity =", this.quantity, ", price =", this.price, 'RateofProd= ', this.rateOfProd );
   }
 
 };
 
 class Grain extends Resource {
   static name = "Grain";
-  static {
-    Resource.subclasses.add(this); // sets subclasses as a set and adds each child to it. 
-  }
   maxPrice = 17; // resource will not sell for more than this, this is price at quantity of one
   minPrice = 3; // will not sell for less, this is price at quantity = 1000
   rateOfProd = 2; // number of resources produced per tick
@@ -56,13 +62,20 @@ class Grain extends Resource {
 
 
 }
-Resource.subclasses.forEach(resource => new resource());// autmatically instantiates each class that we make, and each one is added to the map we need to export. 
-// map puts classes in an object then gives them keys. basically.... 
 
+class Steel extends Resource {
+  static name = "Steel";
+  maxPrice = 27; // resource will not sell for more than this, this is price at quantity of one
+  minPrice = 7; // will not sell for less, this is price at quantity = 1000
+  rateOfProd = 1; // number of resources produced per tick
+  price = 7; // the discrete price of buying one of this resource. 
+  quantity = 100; // min of zero, max of 1000
+  multiplier = 7; // scalar used to help determine how much rateOfProd can change per tick. 
 
-
-
+}
 
 module.exports = {
+  Grain,
+  Steel,
   resourceMap,
 }
