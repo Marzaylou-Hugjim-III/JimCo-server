@@ -30,7 +30,7 @@ class ExampleRoute extends Route {
   static name = "example";
   static { Route.subclasses.add(this) };
   invoke(message) {
-    // write code here
+    console.log('Example pog');
     return message; // used so that outboard switchboard has something to navigate with. 
   }
 }
