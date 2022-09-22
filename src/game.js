@@ -2,24 +2,40 @@
 
 const Chance = require("chance");
 const chance = new Chance();
-const Resource = require("./eco");
+const { Grain, Steel } = require("./eco");
 
 //what a game needs to do:
 // * send players to game page
 // * countdown to start
 // *
 
-const presets = [
-    [Resource, Resource, Resource],
+const presets = [ // when game starts, randomly pick an array of resources in game. 
+    [Grain, Steel],
 ];
 
+class Player {
+    money = 0
+    resourceMap = undefined;
+
+    constructor(clientId) {
+        this.name = chance.animal();
+        this.clientId = clientId;
+    }
+
+    getResourceCount(name) {
+        return this.resourceMap.get(name);
+    }
+};
+
 class Game {
+    ///id of the process() ticker
+    processId = undefined;
+
     constructor(playerIds) {
         //change to Resource
-        this.resources = [];
         this.resources = this.instantiateResources(chance.pickone(presets));
         this.players = this.instantiatePlayers(playerIds);
-        this.countdownToStart(5000);
+        this.countdownToStart(1000);
     }
     countdownToStart(time) {
         if (!time) {
@@ -39,11 +55,8 @@ class Game {
             this.resources.forEach((res) => {
                 resourceMap.set(res.name, 0);
             });
-            const player = {
-                clientId: id,
-                money: 0,
-                resources: resourceMap,
-            };
+            const player = new Player(id)
+            player.resourceMap = resourceMap
             return player;
         });
     }
@@ -51,12 +64,44 @@ class Game {
     instantiateResources(preset) {
         return preset.map((Class) => new Class());
     }
+
+    addMoney(player, amt) { // amt should be from clicks and resources sold during last tick. 
+        player.money += amt;
+        //add money, in whatever bounds
+        //did this player win
+        if(player.money > 100000) {
+            this.finishGame(player)
+        }
+    }
+
+    //given an id, returns a player in the game
+    id2player(id) {
+        for(const player of this.players) {
+            if(player.id === id) {
+                return player
+            }
+        }
+        return null;
+    }
+
     startGame() {
         console.log("starting");
-        setTimeout(this.finishGame, 5000);
+        this.processId = setInterval(() => {this.process()}, 500)
     }
-    finishGame() {
-        console.log("ending");
+
+    process() {
+        //update all resources
+        this.resources.forEach(resource => resource.loop())
+    }
+
+    finishGame(winner) {
+        console.log(`${winner.name} has won!`);
+        clearInterval(this.processId)
     }
 }
-const game = new Game(["testing testing"]);
+
+let testing = new Game(["hiii"])
+
+module.exports = {
+    Game
+}

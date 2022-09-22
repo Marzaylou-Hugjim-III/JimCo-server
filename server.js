@@ -1,8 +1,11 @@
 import { Server } from "socket.io";
 const io = new Server();
 import dotenv from "dotenv";
-import { routeMap } from "./server-modules/routeClass.js";
-import { outboundSwitchboard } from './server-modules/outboundSwitchboard.js';
+import { routeMap } from "./src/routeClass.js";
+import { outboundSwitchboard } from './src/outboundSwitchboard.js';
+let { Game } = require("./src/game")
+let game;
+let lobby = [];
 dotenv.config();
 io.listen(process.env.PORT || 3500);
 
@@ -41,4 +44,6 @@ function inboundSwitchboard(message) {
 
 module.exports = {
   allClients,
+  game,
+  lobby,
 }
