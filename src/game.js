@@ -15,17 +15,89 @@ const presets = [ // when game starts, randomly pick an array of resources in ga
 
 class Player {
     money = 0;
-    resourceMap = undefined;
+    playerResourceMap = undefined;
+    clickMultiplier = 1; // upgrade to be bought that allows a multiplier for each click, ie JimCoin added per click = 1*multiplier
+    autoClicker = 0;
+    autoGrain = 0;
+    autoSteel = 0;
+
 
     constructor(clientId) {
         this.name = chance.animal();
         this.clientId = clientId;
     }
+    buyAutoGrain() {
+        if (this.money > 2000 * (autoGrain + 1)) {
+            if (!autoGrain > 0) {
+                return;
+            } else {
+                this.money -= 2000 * (autoGrain + 1);
+                autoGrain++;
+            }
+        } else {
+            console.log("Not enough money to buy autoGrain");
+        }
+    }
+    buyAutoSteel() {
+        if (this.money > 2000 * (autoSteel + 1)) {
+            if (!autoSteel > 0) {
+                return;
+            } else {
+                this.money -= 2000 * (autoSteel + 1);
+                this.autoSteel++
+            }
+        } else {
+            console.log("Not enough money to buy autoSteel");
+        }
+    }
+    buyClickMultiplier() { // each level adds 1000*2^clickMultiplier
+        if (this.money >= 1000 * Math.pow(2, this.clickMultiplier) && this.clickMultiplier < 11) {
+            this.money -= 1000 * Math.pow(2, this.clickMultiplier);
+            this.clickMultiplier++;
+        }
+    };
+    buyAutoClicker() { // each level adds 2500 to price
+        if (this.money >= 2500 * (autoClicker + 1)) {
+            if (!autoClicker > 0) {
+                return;
+            } else {
+                this.money -= 2500 * (autoClicker + 1);
+                this.autoClicker++;
+            }
+        }
+    }
+
+    buyResource(amt, resource) {
+        if (this.money >= resource.price * amt && resource.quantity > amt) {
+            this.money -= resource.price * amt && resource.quantity;
+            this.playerResourceMap.set(resource.name, this.playerResourceMap.get(resource.name) + amt);
+        }
+    }
+    sellResource(amt, resource) {
+        if (this.playerResourceMap.get(resource.name) > amt) {
+            this.money += resource.price * amt && resource.quantity;
+            this.playerResourceMap.set(resource.name, this.playerResourceMap.get(resource.name) - amt);
+        }
+    }
 
     getResourceCount(name) {
-        return this.resourceMap.get(name);
+        return this.playerResourceMap.get(name);
     }
-    
+
+    implementAutoGrain() {
+        if (!autoGrain > 0) {
+            return
+        } else {
+            this.playerResourceMap.set("Grain", this.playerResourceMap.get(resource.name) + this.autoGrain);
+        }
+    }
+    implementAutoSteel() {
+        if (!autoSteel > 0) {
+            return
+        } else {
+            this.playerResourceMap.set("Steel", this.playerResourceMap.get(resource.name) + this.autoSteel);
+        }
+    }
 };
 
 class Game {
@@ -52,12 +124,12 @@ class Game {
     ///turns all player ids into player objects
     instantiatePlayers(ids) {
         return ids.map((id) => {
-            const resourceMap = new Map();
+            const playerResourceMap = new Map();
             this.resources.forEach((res) => {
-                resourceMap.set(res.name, 0);
+                playerResourceMap.set(res.name, 0);
             });
             const player = new Player(id)
-            player.resourceMap = resourceMap
+            player.playerResourceMap = playerResourceMap
             return player;
         });
     }
@@ -70,15 +142,15 @@ class Game {
         player.money += amt;
         //add money, in whatever bounds
         //did this player win
-        if(player.money > 100000) {
+        if (player.money > 100000) {
             this.finishGame(player)
         }
     }
 
     //given an id, returns a player in the game
     id2player(id) {
-        for(const player of this.players) {
-            if(player.id === id) {
+        for (const player of this.players) {
+            if (player.id === id) {
                 return player
             }
         }
@@ -87,7 +159,7 @@ class Game {
 
     startGame() {
         console.log("starting");
-        this.processId = setInterval(() => {this.process()}, 50)
+        this.processId = setInterval(() => { this.process() }, 100)
     }
 
     process() {

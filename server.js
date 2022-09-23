@@ -53,7 +53,7 @@ function outboundSwitchboard(message) {
   const key = message?.intendedReciever;
   switch (key) {
     case 'sender':
-      getClientByID(message.id)?.emit("pong", message);
+      getClientByID(message.id)?.emit(message.clientRoute, message);
       break;
     case 'others':
       emitToOthers(message.id, message);
@@ -80,7 +80,7 @@ function emitToOthers(ignoredId, message) {
     if (client.id === ignoredId) {
       continue;
     }
-    client.emit("pong", message);
+    client.emit(message.clientRoute, message);
   }
 }
 

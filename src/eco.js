@@ -1,11 +1,7 @@
 // the goal is to have no fractional JimCoins. 
-const resourceMap = new Map();
-
 class Resource {
   static name;
-  constructor() {    // the name/key       value
-    resourceMap.set(this.constructor.name, this);
-  }
+
   maxPrice; // resource will not sell for more than this, this is price at quantity of one
   minPrice; // will not sell for less, this is price at quantity = 1000
   rateOfProd; // number of resources produced per tick
@@ -80,7 +76,7 @@ class Resource {
     if (this.quantity > 1200) {  // with quantities higher than 1200, rate of production drops to 0. on a random number from 0-1 of higher than .8, remove up to 750 from quantity.
       let randomNum = Math.random();
       if (randomNum > .8) {
-        this.rateOfProd = Math.floor(Math.random() * -750);
+        this.rateOfProd = Math.floor(Math.random() * -1000);
         this.increaseMaxPrice();
         this.increaseMinPrice();
         return this.rateOfProd;
@@ -118,7 +114,7 @@ class Resource {
 };
 
 class Grain extends Resource {
-  static name = "Grain";
+  name = "Grain";
   maxPrice = 17; // resource will not sell for more than this, this is price at quantity of one
   minPrice = 3; // will not sell for less, this is price at quantity = 1000
   rateOfProd = 2; // number of resources produced per tick
@@ -130,7 +126,7 @@ class Grain extends Resource {
 }
 
 class Steel extends Resource {
-  static name = "Steel";
+  name = "Steel";
   maxPrice = 27; // resource will not sell for more than this, this is price at quantity of one
   minPrice = 7; // will not sell for less, this is price at quantity = 1000
   rateOfProd = 1; // number of resources produced per tick
@@ -143,5 +139,4 @@ class Steel extends Resource {
 module.exports = {
   Grain,
   Steel,
-  resourceMap,
 }

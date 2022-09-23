@@ -1,5 +1,4 @@
 const routeMap = new Map();
-const resourceMap = require('./eco');
 const { game, lobby } = require("../server");
 
 class Route {
@@ -41,7 +40,7 @@ class getResourcesRoute extends Route {
   static { Route.subclasses.add(this) }; // dont touch
   invoke(message) { // the message comes from the client. 
       let resourceArray = [];
-      Object.keys(resourceMap).forEach(key => resourceArray.push({name: key.name, quantity: key.quantity, price: key.price }));
+      Object.keys(game.resources).forEach(key => resourceArray.push({name: key.name, quantity: key.quantity, price: key.price }));
     message.payload = { 
       resourceArray
   };
