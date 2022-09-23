@@ -19,7 +19,7 @@ class Player {
 
     constructor(clientId) {
         this.name = chance.animal();
-        this.clientId = clientId;
+        this.id = clientId;
     }
 
     getResourceCount(name) {
@@ -100,8 +100,6 @@ class Game {
         clearInterval(this.processId)
     }
 }
-
-let testing = new Game(["hiii"])
 
 module.exports = {
     Game

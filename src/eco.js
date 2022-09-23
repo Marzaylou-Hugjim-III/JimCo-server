@@ -1,11 +1,6 @@
 // the goal is to have no fractional JimCoins. 
-const resourceMap = new Map();
-
 class Resource {
-  static name;
-  constructor() {    // the name/key       value
-    resourceMap.set(this.constructor.name, this);
-  }
+  name;
   maxPrice; // resource will not sell for more than this, this is price at quantity of one
   minPrice; // will not sell for less, this is price at quantity = 1000
   rateOfProd; // number of resources produced per tick
@@ -112,36 +107,32 @@ class Resource {
     this.productionRate(); // determine what the amount produced will be
     this.quantityCalc(); // determine what the new amount will be
     this.priceCalc(); // determine what the new price will be. 
-    console.log("name =", this.name, ", quantity =", this.quantity, ", price =", this.price, 'MaxPrice', this.maxPrice);
+    // console.log("name =", this.name, ", quantity =", this.quantity, ", price =", this.price, 'MaxPrice', this.maxPrice);
   }
 
 };
 
 class Grain extends Resource {
-  static name = "Grain";
+  name = "Grain";
   maxPrice = 17; // resource will not sell for more than this, this is price at quantity of one
   minPrice = 3; // will not sell for less, this is price at quantity = 1000
   rateOfProd = 2; // number of resources produced per tick
   price = 2; // the discrete price of buying one of this resource. 
   quantity = 1; // min of zero, max of 1000
   multiplier = 13; // scalar used to help determine how much rateOfProd can change per tick. 
-
-
 }
 
 class Steel extends Resource {
-  static name = "Steel";
+  name = "Steel";
   maxPrice = 27; // resource will not sell for more than this, this is price at quantity of one
   minPrice = 7; // will not sell for less, this is price at quantity = 1000
   rateOfProd = 1; // number of resources produced per tick
   price = 7; // the discrete price of buying one of this resource. 
   quantity = 100; // min of zero, max of 1000
   multiplier = 7; // scalar used to help determine how much rateOfProd can change per tick. 
-
 }
 
 module.exports = {
   Grain,
   Steel,
-  resourceMap,
 }
