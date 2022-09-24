@@ -7,80 +7,93 @@ const io = new Server(httpServer, {
   },
 });
 const dotenv = require("dotenv");
-const { routeMap } = require("./src/routeClass");
 let { Game } = require("./src/game")
+
 let game;
 let lobby = [];
+
 dotenv.config();
 io.listen(process.env.PORT || 3500);
 
 const allClients = [];
 io.on("connection", (client) => {
-  console.log("connection", client);
   allClients.push(client);
-  client.on("ping", (message) => inboundSwitchboard(message));
-  // this could be run through a diagnostics function first that handles any health checks like waiting times, then passes to switchboard when finished
+
+  client.on("addMoney", addMoney);
+  client.on("getPlayer", getPlayer);
+  client.on("joinLobby", joinLobby);
+  client.on("startGame", startGame);
+  client.on("getResources", getResources);
+  client.on("log", log)
 });
 
-console.log("test");
-//////////////////////////////////////
-// an example message might look like:
-
-// const message =
-// {
-//   route: 'addition',
-//   id: socket.id,
-//   intendedReciever: 'sender',
-//   clientRoute: 'example',
-//   payload:
-//   {
-//     stuff: 'pog',
-//   }
-// }
-//////////////////////////////////////
-
-function inboundSwitchboard(message) {
-  console.log('Client has pogged', message);
-  const route = routeMap.get(message.route);
-  if (route) {
-    outboundSwitchboard(route.invoke(message));
-  } else {
-    throw new Error(`Your message's route was not found:`, message.route);
-  }
+function log(string) {
+  console.log(string);
+  io.emit("serverLog")
 }
 
-function outboundSwitchboard(message) {
-  const key = message?.intendedReciever;
-  switch (key) {
-    case 'sender':
-      getClientByID(message.id)?.emit("pong", message);
-      break;
-    case 'others':
-      emitToOthers(message.id, message);
-      break;
-    case 'all':
-      io.emit(message);
-    default:
-      break;
+function addMoney(id, amt) { 
+  if (!game) {
+    return
   }
+  const player = game.id2player(id);
+  if(!player) {
+    console.warn("could not find player to match", id)
+    return
+  }
+  player.money += amt 
+  const client = getClientByID(id)
+  client.emit("moneyAdded", player.money)
+}
+
+function getResources(id) { 
+  if (!game) {
+    return
+  }
+  const player = game.id2player(id)
+  const returned = {}
+  game.resources.forEach(resource => {
+    returned[resource.name] = player.getResourceCount(resource.name);
+  })
+
+  const client = getClientByID(id);
+  client.emit("getResources", returned);
+}
+
+function startGame() { 
+  if (game) {
+    console.log("already game in progress")
+    return
+  }
+  console.log("game started, lobby:", lobby)
+  game = new Game(lobby)
+  lobby.forEach(id => {
+    const inLobbyClient = getClientByID(id)
+    inLobbyClient.emit("gameStarting")
+  })
+}
+
+function getPlayer(id) {
+  if (!game) {
+    return
+  }
+  const player = game.id2player(id); 
+  const client = getClientByID(id)
+  client.emit("recievedPlayer", player);
+}
+
+function joinLobby(id) { 
+  console.log("lobby joined")
+  lobby.push(id)
+  const client = getClientByID(id)
+  client.emit("recievedLobby", lobby);
 }
 
 function getClientByID(id) {
-  let output;
-  //console.log("allClients", allClients);
-  allClients.forEach((client) => {
-    // use allClients.find
-    client.id === id ? (output = client) : null;
-  });
-  return output;
-} // this could instead directly emit to client witth error handling
-
-function emitToOthers(ignoredId, message) {
-  for (const client of allClients) {
-    if (client.id === ignoredId) {
-      continue;
+  for(let client of allClients) {
+    if(client.id === id) {
+      return client;
     }
-    client.emit("pong", message);
   }
 }
 
