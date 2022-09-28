@@ -10,7 +10,10 @@ function toggleLobby(id) {
   }
   global.lobby.push(id)
   const client = getClientByID(id);
-  client.emit("recievedLobby", global.lobby);
+  if(!client) {
+    global.lobby.splice(global.lobby.indexOf(id, 1))
+  }
+  client?.emit("recievedLobby", global.lobby);
 }
 
 function startGame() {

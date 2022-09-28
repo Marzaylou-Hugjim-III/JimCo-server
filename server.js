@@ -10,9 +10,8 @@ const dotenv = require("dotenv");
 
 let { log } = require("./listeners/any")
 let { toggleLobby, startGame } = require("./listeners/dashboard")
-let { addMoney, buyResource, sellResource, buyAutoClicker } = require("./listeners/gameboard")
+let { addMoney, buyResource, sellResource, buyAutoClicker, buyMultiplier } = require("./listeners/gameboard")
 let { getPlayer, nameChange } = require("./listeners/any")
-// let { buyResource } = require('./src/game');
 
 global.game;
 global.lobby = [];
@@ -30,26 +29,32 @@ io.on("connection", (client) => {
   client.on("getPlayer", getPlayer);
   client.on("toggleLobby", toggleLobby);
   client.on("startGame", startGame);
-  // client.on("getResources", getResources);
   client.on("log", log);
-  client.on("buyAutoclicker", buyAutoClicker);
-  // client.on("nameChange", nameChange);
+  client.on("buyAutoClicker", buyAutoClicker);
+  client.on("buyMultiplier", buyMultiplier);
+  client.on("nameChange", nameChange);
 });
 
 setInterval(() => {
   let status;
-  if(global.game) {
-    if(global.game.hasStarted) {
-      global.game.process()
+  try {
+    if(global.game) {
+      if(global.game.hasStarted) {
+        global.game.process()
+      }
+      status = global.game?.getStatus()
+    } else {
+      status = {running: false}
     }
-    status = global.game.getStatus()
-  } else {
-    status = {running: false}
+    if(status?.players?.length) {
+      console.log("game status --->", status);
+    }
+  } catch (e) {
+    status = {running: false} 
+    return
   }
-  console.log("game status players --->", status.players);
-  
   io.emit("gameStatus", status)
-}, 100)
+}, 500)
 
 module.exports = {
   lobby,
