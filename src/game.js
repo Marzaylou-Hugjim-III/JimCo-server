@@ -14,78 +14,21 @@ const presets = [ // when game starts, randomly pick an array of resources in ga
 ];
 
 class Player {
-    money = 0;
-    playerResources = undefined;
+    money = 7000;
+    playerResources = [];
     clickMultiplier = 0; // upgrade to be bought that allows a multiplier for each click, ie JimCoin added per click = 1*multiplier
-    autoClicker = 100000;
-    autoGrain = 1;
-    autoSteel = 1;
+    autoClicker = 0;
 
     constructor(clientId) {
         this.name = chance.animal();
         this.id = clientId;
     }
 
-    buyAutoGrain() {
-        if (this.money > 2000 * (autoGrain + 1)) {
-            if (!autoGrain > 0) {
-                return;
-            } else {
-                this.money -= 2000 * (autoGrain + 1);
-                autoGrain++;
-            }
-        } else {
-            console.log("Not enough money to buy autoGrain");
-        }
-    }
-    buyAutoSteel() {
-        if (this.money > 2000 * (autoSteel + 1)) {
-            if (!autoSteel > 0) {
-                return;
-            } else {
-                this.money -= 2000 * (autoSteel + 1);
-                this.autoSteel++
-            }
-        } else {
-            console.log("Not enough money to buy autoSteel"); // these might need to log something to the client later to tell them their purchase failed
-        }
-    }
-    buyClickMultiplier() { // each level adds 1000*2^clickMultiplier
-        if (this.money >= 1000 * Math.pow(2, this.clickMultiplier) && this.clickMultiplier < 11) {
-            this.money -= 1000 * Math.pow(2, this.clickMultiplier);
-            this.clickMultiplier++;
-        } else {
-            console.log("Not enoughh money to buy clickMultiplier");
-        }
-    };
-    buyAutoClicker() { // each level adds 2500 to price
-        if (this.money >= 2500 * (autoClicker + 1)) {
-            if (!autoClicker > 0) {
-                return;
-            } else {
-                this.money -= 2500 * (autoClicker + 1);
-                this.autoClicker++;
-            }
-        }
-    }
-    sellResource(amt, resource) {
-
-        this.money+= amt*resource.price;
-        const newAmt = this.playerResources.resource.quantity - amt
-        this.playerResources[resource.name] = newAmt;
-        resource.quantity += amt;
-        return true
-    }
-
     loop() {
-        this.money += (this.autoClicker * 1) // initial goal was to have 1 click/tick
-        this.playerResources["Steel"] += this.autoSteel; 
-        this.playerResources["Grain"] += this.autoGrain; 
+        this.playerResources.forEach(res => {
+            res.value += res.auto
+        })
     }
-
-    // getResourceCount(name) { // gets resources the player has. 
-    //     return this.playerResources.get(name);
-    // }
     
 };
 
@@ -109,25 +52,14 @@ class Game {
                 money,
                 playerResources,
                 autoClicker,
-                autoSteel,
-                autoGrain,
                 clickMultiplier
             } = player
-            const mapResources = Object.keys(playerResources).map(name => {
-                const value = playerResources[name]
-                return {
-                    name: name, 
-                    value: value
-                }
-            })
             players.push({
                 id: id,
                 money: money,
-                playerResources: mapResources,
+                playerResources: playerResources,
                 clickMultiplier: clickMultiplier,
                 autoClicker: autoClicker,
-                autoSteel: autoSteel,
-                autoGrain: autoGrain,
             })
         }
         // const events = {}; // events or other gamestate modifiers should probably be a separate property on the object when they're made
@@ -161,9 +93,13 @@ class Game {
     ///turns all player ids into player objects
     instantiatePlayers(ids) {
         return ids.map((id) => {
-            const playerResources = {};
+            const playerResources = [];
             this.resources.forEach((res) => {
-                playerResources[res.name] = 0;
+                playerResources.push({
+                    name: res.name,
+                    value: 0,
+                    auto: 0,
+                })
             });
             const player = new Player(id)
             player.playerResources = playerResources
@@ -179,7 +115,7 @@ class Game {
         player.money += amt;
         //add money, in whatever bounds
         //did this player win
-        if(player.money > 100000) {
+        if(player.money > 10000) {
             this.finishGame(player)
         }
     }
@@ -202,18 +138,24 @@ class Game {
     }
 
     startGame() {
+        console.log("STARTING!!!")
         this.hasStarted = true
     }
 
     process() {
         //update all resources
         this.resources.forEach(resource => resource.loop())
-        this.players.forEach(player => player.loop())
+        this.players.forEach(player => {
+            player.loop()
+            //this has to come last since it can win the whole game
+            this.addMoney(player, player.autoClicker * 1)
+        })
     }
 
     finishGame(winner) {
         console.log(`${winner.name} has won!`);
         clearInterval(this.processId)
+        global.game = null;
     }
 }
 
