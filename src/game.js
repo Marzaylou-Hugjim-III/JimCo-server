@@ -2,7 +2,7 @@
 
 const Chance = require("chance");
 const chance = new Chance();
-const { Grain, Steel } = require("./eco");
+const { Grain, Steel, Copper, Gold } = require("./eco");
 
 //what a game needs to do:
 // * send players to game page
@@ -10,13 +10,13 @@ const { Grain, Steel } = require("./eco");
 // *
 
 const presets = [ // when game starts, randomly pick an array of resources in game. 
-    [Grain, Steel],
+    [Grain, Steel, Copper, Gold],
 ];
 
 class Player {
     money = 7000;
     playerResources = [];
-    clickMultiplier = 0; // upgrade to be bought that allows a multiplier for each click, ie JimCoin added per click = 1*multiplier
+    clickMultiplier = 1; // upgrade to be bought that allows a multiplier for each click, ie JimCoin added per click = 1*multiplier
     autoClicker = 0;
 
     constructor(clientId) {
