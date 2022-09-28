@@ -10,7 +10,7 @@ const dotenv = require("dotenv");
 
 let { log } = require("./listeners/any")
 let { toggleLobby, startGame } = require("./listeners/dashboard")
-let { addMoney, buyResource, sellResource, buyAutoClicker, buyMultiplier } = require("./listeners/gameboard")
+let { addMoney, buyResource, sellResource, buyAutoClicker, buyMultiplier, buyAutoResource } = require("./listeners/gameboard")
 let { getPlayer, nameChange } = require("./listeners/any")
 
 global.game;
@@ -31,6 +31,7 @@ io.on("connection", (client) => {
   client.on("startGame", startGame);
   client.on("log", log);
   client.on("buyAutoClicker", buyAutoClicker);
+  client.on("buyAutoResource", buyAutoResource);
   client.on("buyMultiplier", buyMultiplier);
   client.on("nameChange", nameChange);
 });
