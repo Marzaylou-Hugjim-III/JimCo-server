@@ -8,11 +8,13 @@ const io = new Server(httpServer, {
 });
 const dotenv = require("dotenv");
 
-let { log } = require("./listeners/any")
+let { log, chatMessage } = require("./listeners/any");
 let { toggleLobby, startGame } = require("./listeners/dashboard")
 let { addMoney, buyResource, sellResource, buyAutoClicker, buyMultiplier, buyAutoResource } = require("./listeners/gameboard")
 let { getPlayer, nameChange } = require("./listeners/any")
 
+
+global.chat = [];
 global.game;
 global.lobby = [];
 global.allClients = [];
@@ -34,6 +36,7 @@ io.on("connection", (client) => {
   client.on("buyAutoResource", buyAutoResource);
   client.on("buyMultiplier", buyMultiplier);
   client.on("nameChange", nameChange);
+  client.on("chatMessage", chatMessage);
 });
 
 setInterval(() => {
@@ -45,14 +48,19 @@ setInterval(() => {
       }
       status = global.game?.getStatus()
     } else {
-      status = {running: false}
+      status = {
+        running: false,
+        chat: global.chat,
+      }
     }
     if(status?.players?.length) {
       console.log("game status --->", status);
     }
   } catch (e) {
-    status = {running: false} 
-    return
+    status = {
+      running: false,
+      chat: global.chat,
+    }
   }
   io.emit("gameStatus", status)
 }, 500)
