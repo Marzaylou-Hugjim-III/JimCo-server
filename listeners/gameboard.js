@@ -74,31 +74,33 @@ function buyAutoClicker(id) { // each level adds 2500 to price
     console.log("buying clicker")
     player.money -= 200 * ((player.autoClicker + 1)*.6);
     player.autoClicker++;
+  } else{
+      console.log("could not afford. money:", player.money, "is not greater or equal to,", 1200 * (player.autoClicker + 1))
   }
-  console.log("could not afford. money:", player.money, "is not greater or equal to,", 1200 * (player.autoClicker + 1))
+
 }
 
 function buyMultiplier(id) { // each level adds 2500 to price
   const player = global.game.id2player(id);
-
-  if (player.money >= 500 * (player.multiplier + 1)) {
-    player.money -= 500 * (player.multiplier + 1);
-    player.multiplier++;
+  console.log("before", player.clickMultiplier);
+  if (player.money >= 500 * (player.clickMultiplier + 1)) {
+    console.log("player on buy Multiplier", player);
+    player.money -= 500 * (player.clickMultiplier + 1);
+    player.clickMultiplier++;
+    console.log("after", player.clickMultiplier);
   }
 }
 
 function buyAutoResource (id, resourceName){
   const player = global.game.id2player(id);
-
+  console.log("buy autoResource backend");
   const resource = player.playerResources.filter(res => {
     if(res.name === resourceName) {
       return true;
     }
     return false;
   })[0];
-
   const cost = 3000 * (resource.auto + 1)
-
   if(player.money >= cost) {
     player.money -= cost;
     resource.auto += 1;

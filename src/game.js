@@ -2,7 +2,7 @@
 
 const Chance = require("chance");
 const chance = new Chance();
-const { Grain, Steel } = require("./eco");
+const { Grain, Steel, Copper, Gold } = require("./eco");
 
 //what a game needs to do:
 // * send players to game page
@@ -10,7 +10,7 @@ const { Grain, Steel } = require("./eco");
 // *
 
 const presets = [ // when game starts, randomly pick an array of resources in game. 
-    [Grain, Steel],
+    [Grain, Steel, Copper, Gold],
 ];
 
 class Player {
@@ -139,8 +139,7 @@ class Game {
     }
 
     startGame() {
-        console.log("STARTING!!!")
-        this.hasStarted = true
+        this.hasStarted = true;
     }
 
     process() {

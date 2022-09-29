@@ -19,14 +19,9 @@ class Resource {
 
   }
   increaseMinPrice() { // increases max price by 10% 
-    if (this.minPrice * 1.1 > 1) {
-      this.minPrice = Math.floor(this.minPrice * 1.1);
-      return this.minPrice;
-    } else {
-      this.minPrice += 1;
-      return this.minPrice;
-    }
+    this.minPrice += 1;
   }
+
   decreaseMaxPrice() {
     if (this.MaxPrice * .9 > 1) {
       this.maxPrice = Math.floor(this.maxPrice * .9);
@@ -57,11 +52,11 @@ class Resource {
 
   }
   decreaseMultiplier() {
-    if(this.multiplier *.9 > 1){
+    if (this.multiplier * .9 > 1) {
       this.multiplier = Math.floor(this.multiplier * .9);
-    return this.multiplier;
+      return this.multiplier;
     }
-    else{
+    else {
       this.multiplier -= 1;
       return this.multiplier;
     }
@@ -72,15 +67,16 @@ class Resource {
       this.rateOfProd = Math.floor(Math.sin(Math.random() * 2 * Math.PI) * this.multiplier + 5);
       return this.rateOfProd;
     }
-    if (this.quantity > 1200) {  // with quantities higher than 1200, rate of production drops to 0. on a random number from 0-1 of higher than .8, remove up to 750 from quantity.
+    if (this.quantity > 1000) {  // with quantities higher than 1200, rate of production drops to 0. on a random number from 0-1 of higher than .8, remove up to 750 from quantity.
       let randomNum = Math.random();
-      if (randomNum > .8) {
-        this.rateOfProd = Math.floor(Math.random() * -750);
+      if (randomNum > .15) {
+        this.rateOfProd = Math.floor(Math.random() * -1000);
         this.increaseMaxPrice();
         this.increaseMinPrice();
         return this.rateOfProd;
       }
-      return this.rateOfProd = 0;
+      this.rateOfProd = Math.floor(Math.sin(Math.random() * 2 * Math.PI) * this.multiplier + 5);
+      return this.rateOfProd;
     }
     else { //slow, positive growth before quantity of 200
       this.rateOfProd = Math.floor(Math.random() * this.multiplier);
@@ -107,7 +103,7 @@ class Resource {
     this.productionRate(); // determine what the amount produced will be
     this.quantityCalc(); // determine what the new amount will be
     this.priceCalc(); // determine what the new price will be. 
-    // console.log("name =", this.name, ", quantity =", this.quantity, ", price =", this.price, 'MaxPrice', this.maxPrice);
+    // console.log("name =", this.name, ", quantity =", this.quantity, ", price =", this.price, 'MaxPrice', this.maxPrice, 'MinPrice', this.minPrice);
   }
 
 };
@@ -128,11 +124,33 @@ class Steel extends Resource {
   minPrice = 7; // will not sell for less, this is price at quantity = 1000
   rateOfProd = 1; // number of resources produced per tick
   price = 7; // the discrete price of buying one of this resource. 
-  quantity = 100; // min of zero, max of 1000
+  quantity = 100;
   multiplier = 7; // scalar used to help determine how much rateOfProd can change per tick. 
+}
+
+class Copper extends Resource {
+  name = "Copper";
+  maxPrice = 41; // resource will not sell for more than this, this is price at quantity of one
+  minPrice = 13; // will not sell for less, this is price at quantity = 1000
+  rateOfProd = 1; // number of resources produced per tick
+  price = 7; // the discrete price of buying one of this resource. 
+  quantity = 25;
+  multiplier = 5; // scalar used to help determine how much rateOfProd can change per tick. Volatility
+}
+
+class Gold extends Resource {
+  name = "Gold";
+  maxPrice = 87; // resource will not sell for more than this, this is price at quantity of one
+  minPrice = 43; // will not sell for less, this is price at quantity = 1000
+  rateOfProd = 1; // number of resources produced per tick
+  price = 7; // the discrete price of buying one of this resource. 
+  quantity = 10;
+  multiplier = 3; // scalar used to help determine how much rateOfProd can change per tick. Volatility
 }
 
 module.exports = {
   Grain,
   Steel,
+  Copper,
+  Gold,
 }
