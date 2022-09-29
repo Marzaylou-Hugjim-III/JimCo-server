@@ -3,7 +3,7 @@ const { createServer } = require("http");
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://mywebappenvironment-client.eba-g92ik2ga.us-west-2.elasticbeanstalk.com",
   },
 });
 const dotenv = require("dotenv");
