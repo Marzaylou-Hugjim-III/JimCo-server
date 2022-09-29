@@ -20,7 +20,7 @@ global.lobby = [];
 global.allClients = [];
 
 dotenv.config();
-io.listen(process.env.PORT || 3500);
+io.listen("http://mywebappenvironment.eba-snn38san.us-west-2.elasticbeanstalk.com/" || 3500);
 
 io.on("connection", (client) => {
   global.allClients.push(client);
