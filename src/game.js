@@ -76,6 +76,7 @@ class Game {
             running: true,
             players: players,
             resources: resources,
+            chat: global.chat,
         }
     }
 

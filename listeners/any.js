@@ -24,9 +24,21 @@ function getClientByID(id) {
 function nameChange(message) {
   getPlayer(message.id).name = message.name;
 }
+
+function chatMessage(name, content) {
+  global.chat.push({
+    name: name,
+    content: content,
+  })
+  if(global.chat.length > 100) {
+    global.chat.shift()
+  }
+}
+
 module.exports = {
   log,
   getPlayer,
   getClientByID,
   nameChange,
+  chatMessage,
 }
