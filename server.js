@@ -3,9 +3,10 @@ const { createServer } = require("http");
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://mywebappenvironment-client.eba-g92ik2ga.us-west-2.elasticbeanstalk.com",
+    origin: "http://localhost:3000",
   },
 });
+// "http://mywebappenvironment-client.eba-g92ik2ga.us-west-2.elasticbeanstalk.com"
 const dotenv = require("dotenv");
 
 let { log, chatMessage } = require("./listeners/any");
@@ -20,7 +21,7 @@ global.lobby = [];
 global.allClients = [];
 
 dotenv.config();
-io.listen("http://mywebappenvironment.eba-snn38san.us-west-2.elasticbeanstalk.com/" || 3500);
+io.listen(3500);
 
 io.on("connection", (client) => {
   global.allClients.push(client);

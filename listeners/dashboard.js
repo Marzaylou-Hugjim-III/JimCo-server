@@ -28,6 +28,7 @@ function startGame() {
     inLobbyClient.emit("gameStarting");
     console.log("Game instance ---->", Game);
   })
+  global.lobby = [];
 }
 
 module.exports = {
