@@ -39,7 +39,8 @@ class Game {
         //change to Resource
         this.resources = this.instantiateResources(chance.pickone(presets));
         this.players = this.instantiatePlayers(playerIds);
-        this.countdownToStart(2000);
+        this.startGame();
+        //this.countdownToStart(2000);
     }
 
     // ticked by server.js, returns an object
@@ -79,17 +80,17 @@ class Game {
         }
     }
 
-    countdownToStart(time) {
-        if (!time) {
-            this.startGame();
-        }
-        else {
-            console.log(time / 1000, "seconds before begin");
-            setTimeout(() => {
-                this.countdownToStart(time - 1000);
-            }, 1000);
-        }
-    }
+    // countdownToStart(time) {
+    //     if (!time) {
+    //         this.startGame();
+    //     }
+    //     else {
+    //         console.log(time / 1000, "seconds before begin");
+    //         setTimeout(() => {
+    //             this.countdownToStart(time - 1000);
+    //         }, 1000);
+    //     }
+    // }
     ///turns all player ids into player objects
     instantiatePlayers(ids) {
         return ids.map((id) => {
@@ -138,7 +139,7 @@ class Game {
     }
 
     startGame() {
-        console.log("STARTING!!!")
+        //console.log("STARTING!!!")
         this.hasStarted = true
     }
 
