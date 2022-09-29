@@ -16,7 +16,7 @@ const presets = [ // when game starts, randomly pick an array of resources in ga
 class Player {
     money = 7000;
     playerResources = [];
-    clickMultiplier = 1; // upgrade to be bought that allows a multiplier for each click, ie JimCoin added per click = 1*multiplier
+    clickMultiplier = 0; // upgrade to be bought that allows a multiplier for each click, ie JimCoin added per click = 1*multiplier
     autoClicker = 0;
 
     constructor(clientId) {
@@ -138,8 +138,7 @@ class Game {
     }
 
     startGame() {
-        console.log("STARTING!!!")
-        this.hasStarted = true
+        this.hasStarted = true;
     }
 
     process() {
