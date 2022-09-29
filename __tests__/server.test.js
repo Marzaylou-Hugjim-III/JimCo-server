@@ -1,35 +1,46 @@
-const { routeMap } = require('../src/routeClass')
+const { Game } = require('../src/game');
+const { addMoney, buyResource, sellResource, buyAutoClicker, buyAutoResource, buyMultiplier } = require('../listeners/gameboard');
+const { toggleLobby } = require('../listeners/dashboard');
+global.game;
+global.lobby = [];
+global.allClients = [{name: 'client', id: 123, emit: jest.fn()}];
 
-describe('Classes invoke successfully', () => {
+describe('Sockets invoke successfully', () => {
+  beforeEach(() => {
+    global.game = new Game([123]);
+  });
+
+  afterEach(() => {
+    game = null;
+  });
+
+  it('adds money', () => {
+    addMoney(123, 5);
+    expect(global.game.players[0].money).toBeGreaterThanOrEqual(5);
+  });
   
-  it('Invokes example', () => {
-    expect(routeMap.get('example').invoke('hello world')).toEqual('hello world');
+  it('buys resources', () => {
+    addMoney(123, 5000);
+    buyResource(123, 'Grain', 1);
+    expect(global.game.players[0].playerResources[0].value).toBe(1);
   });
 
-  it('Invokes getResources', () => {
-    expect(routeMap.get('getResources').invoke({payload: 'hello world'})).toEqual({
-      payload: {resourceArray:[{name: 'Grain', quantity: 1, price: 2},{name: 'Steel', quantity: 100, price: 7}]}
-    });
+  it('sells resources', () => {
+    addMoney(123, 5000);
+    buyResource(123, 'Grain', 1); // costs 2
+    sellResource(123, 'Grain', 1);
+    expect(global.game.players[0].money).toBe(17000);
   });
 
-  it('Invokes example', () => {
-    expect(routeMap.get('example').invoke('hello world')).toEqual('hello world');
+  it('buys autoclicker', () => {
+    addMoney(123, 5000);
+    buyAutoClicker(123);
+    expect(global.game.players[0].autoClicker).toBe(1);
   });
 
-  it('Invokes example', () => {
-    expect(routeMap.get('example').invoke('hello world')).toEqual('hello world');
+  it('buys multiplier', () => {
+    addMoney(123, 5000);
+    buyMultiplier(123);
+    expect(global.game.players[0].clickMultiplier).toBe(2);
   });
-
-  it('Invokes example', () => {
-    expect(routeMap.get('example').invoke('hello world')).toEqual('hello world');
-  });
-
-  it('Invokes example', () => {
-    expect(routeMap.get('example').invoke('hello world')).toEqual('hello world');
-  });
-
-  it('Invokes example', () => {
-    expect(routeMap.get('example').invoke('hello world')).toEqual('hello world');
-  });
-
 });
