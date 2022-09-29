@@ -19,9 +19,9 @@ class Resource {
 
   }
   increaseMinPrice() { // increases max price by 10% 
-      this.minPrice += 1;
-    }
-  
+    this.minPrice += 1;
+  }
+
   decreaseMaxPrice() {
     if (this.MaxPrice * .9 > 1) {
       this.maxPrice = Math.floor(this.maxPrice * .9);
@@ -52,11 +52,11 @@ class Resource {
 
   }
   decreaseMultiplier() {
-    if(this.multiplier *.9 > 1){
+    if (this.multiplier * .9 > 1) {
       this.multiplier = Math.floor(this.multiplier * .9);
-    return this.multiplier;
+      return this.multiplier;
     }
-    else{
+    else {
       this.multiplier -= 1;
       return this.multiplier;
     }
@@ -124,7 +124,7 @@ class Steel extends Resource {
   minPrice = 7; // will not sell for less, this is price at quantity = 1000
   rateOfProd = 1; // number of resources produced per tick
   price = 7; // the discrete price of buying one of this resource. 
-  quantity = 100; 
+  quantity = 100;
   multiplier = 7; // scalar used to help determine how much rateOfProd can change per tick. 
 }
 
@@ -134,7 +134,7 @@ class Copper extends Resource {
   minPrice = 13; // will not sell for less, this is price at quantity = 1000
   rateOfProd = 1; // number of resources produced per tick
   price = 7; // the discrete price of buying one of this resource. 
-  quantity = 25; 
+  quantity = 25;
   multiplier = 5; // scalar used to help determine how much rateOfProd can change per tick. Volatility
 }
 
@@ -144,7 +144,7 @@ class Gold extends Resource {
   minPrice = 43; // will not sell for less, this is price at quantity = 1000
   rateOfProd = 1; // number of resources produced per tick
   price = 7; // the discrete price of buying one of this resource. 
-  quantity = 10; 
+  quantity = 10;
   multiplier = 3; // scalar used to help determine how much rateOfProd can change per tick. Volatility
 }
 
