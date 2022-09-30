@@ -19,8 +19,8 @@ class Player {
     clickMultiplier = 0; // upgrade to be bought that allows a multiplier for each click, ie JimCoin added per click = 1*multiplier
     autoClicker = 0;
 
-    constructor(clientId) {
-        this.name = chance.animal();
+    constructor(clientId, name) {
+        this.name = name || chance.animal();
         this.id = clientId;
     }
 
@@ -35,10 +35,10 @@ class Player {
 class Game {
     hasStarted = false;
 
-    constructor(playerIds) {
+    constructor(playerList) {
         //change to Resource
         this.resources = this.instantiateResources(chance.pickone(presets));
-        this.players = this.instantiatePlayers(playerIds);
+        this.players = this.instantiatePlayers(playerList);
         this.startGame();
         //this.countdownToStart(2000);
     }
@@ -94,7 +94,7 @@ class Game {
     // }
     ///turns all player ids into player objects
     instantiatePlayers(ids) {
-        return ids.map((id) => {
+        return ids.map((idAndName) => {
             const playerResources = [];
             this.resources.forEach((res) => {
                 playerResources.push({
@@ -103,7 +103,7 @@ class Game {
                     auto: 0,
                 })
             });
-            const player = new Player(id)
+            const player = new Player(idAndName.id, idAndName.name);
             player.playerResources = playerResources
             return player;
         });
